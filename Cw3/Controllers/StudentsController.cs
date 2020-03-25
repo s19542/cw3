@@ -6,11 +6,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cw3.Controllers
 {
-    public class StudentsController : Controller
+    [ApiController]
+    [Route("api/students")]
+    public class StudentsController : ControllerBase
     {
-        public IActionResult Index()
+        [HttpGet]
+        public string GetStudents(string orderBy)
         {
-            return View();
+            return $"Kowalski, Majewski, Andrzejewski sortowanie={orderBy}";
+        }
+
+        [HttpGet("{id}")]
+
+        public IActionResult GetStudent(int id)
+        {
+            if (id == 1)
+            {
+                return Ok("Kowalski");
+
+            }
+            else if (id == 2)
+            {
+                return Ok("Majewski");
+            }
+            return NotFound("Nie znaleziono studenta");
         }
     }
 }

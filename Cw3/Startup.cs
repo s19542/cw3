@@ -31,14 +31,23 @@ namespace Cw3
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            //
+            app.UseDeveloperExceptionPage();
 
-            app.UseHttpsRedirection();
+            app.UseRouting();//jezeli nie jest na produkcji
 
-            app.UseRouting();
+            //////////////////////////////////////////
+            //   app.UseHttpsRedirection();//перенаправляє назад якщо протокол не https 
+            //не пропускає в наст міддлваре
+
+            //доклеює до відповіді наглувек http
+            app.Use(async (contex, c)=>{
+                contex.Response.Headers.Add("Secret", "123");
+                await c.Invoke();//пропускаэ запрос в наст міддлваре
+            });
+            ///////////////////////////////////
+
+            
 
             app.UseAuthorization();
 
