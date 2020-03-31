@@ -29,18 +29,20 @@ namespace Cw3.Controllers
             using (SqlCommand com = new SqlCommand())
             {
                 com.Connection = con;
-                com.CommandText = "select * from Student";
+                com.CommandText = "select FirstName,LastName,BirthDate, Name, Semester from Student INNER JOIN Enrollment en ON Student.IdEnrollment = en.IdEnrollment INNER JOIN Studies st ON en.IdStudy = st.IdStudy;";
 
                 con.Open();
                 var dr = com.ExecuteReader();
                 while (dr.Read()) 
                 {
                     var st = new Student();
-                    st.IndexNumber = dr["IndexNumber"].ToString();
+                    
                     st.FirstName = dr["FirstName"].ToString();
                     st.LastName = dr["LastName"].ToString();
                     st.BirthDate = dr["BirthDate"].ToString();
-                    st.IdEnrollment = dr.GetInt32(4);
+                    st.NazwaStudiow = dr["Name"].ToString();
+                    st.NumerSemestru = dr["Semester"].ToString();
+
                     list.Add(st);
 
 

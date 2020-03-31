@@ -12,14 +12,14 @@ namespace Cw3.DAL
             private static IEnumerable<Student> _students;
             static MockDbService()
             {
-                _students = new List<Student>
+             /*   _students = new List<Student>
          {
-             new Student{IndexNumber ="1", FirstName="Jan", LastName="Kowalski",BirthDate="1980-05-10",IdEnrollment=1 } ,
-             new Student{IndexNumber ="2", FirstName="Anna", LastName="Majewski",BirthDate="1980-05-10", IdEnrollment=1} ,
-             new Student{ IndexNumber ="3", FirstName="Andrzej", LastName="Andrzejewski",BirthDate="1980-05-10",IdEnrollment=1}
+             new Student{ FirstName="Jan", LastName="Kowalski",BirthDate="1980-05-10" } ,
+             new Student{ FirstName="Anna", LastName="Majewski",BirthDate="1980-05-10} ,
+             new Student{ FirstName="Andrzej", LastName="Andrzejewski",BirthDate="1980-05-10"}
 
          };
-
+         */
             }
             public IEnumerable<Student> GetStudents()
             {
