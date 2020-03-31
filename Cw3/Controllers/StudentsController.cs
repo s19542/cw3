@@ -1,7 +1,6 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 using Cw3.DAL;
 using Cw3.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,72 +8,55 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cw3.Controllers
 {
-    [ApiController]
+   [ApiController]
     [Route("api/students")]
     public class StudentsController : ControllerBase
     {
-        private readonly IDbService _dbService;
+      
 
-        public StudentsController(IDbService dbService)
-        {
-            _dbService = dbService;
-        }
-            
+        private const string ConString = "Data Source=db-mssql;Initial Catalog=s19542;Integrated Security=True";
+
+     
+
         [HttpGet]
-        public IActionResult GetStudents(string orderBy)
+        public IActionResult GetStudents()
         {
-            return Ok(_dbService.GetStudents());
-        }
-        
-        /*
-         //QueryString
-        [HttpGet]
-        public string GetStudents(string orderBy)
-        {
-            return $"Kowalski, Majewski, Andrzejewski sortowanie={orderBy}";
-        }
-        */
+            var list = new List<Student>();
 
-        //URL segment
-        [HttpGet("{id}")]
-
-        public IActionResult GetStudent(int id)
-        {
-            if (id == 1)
+       
+            using (SqlConnection con = new SqlConnection(ConString))
+           
+            using (SqlCommand com = new SqlCommand())
             {
-                return Ok("Kowalski");
+                com.Connection = con;
+                com.CommandText = "select * from Student";
+
+                con.Open();
+                var dr = com.ExecuteReader();
+                while (dr.Read()) 
+                {
+                    var st = new Student();
+                    st.IndexNumber = dr["IndexNumber"].ToString();
+                    st.FirstName = dr["FirstName"].ToString();
+                    st.LastName = dr["LastName"].ToString();
+                    st.BirthDate = dr["BirthDate"].ToString();
+                    st.IdEnrollment = dr.GetInt32(4);
+                    list.Add(st);
+
+
+                }
 
             }
-            else if (id == 2)
-            {
-                return Ok("Majewski");
-            }
-            return NotFound("Nie znaleziono studenta");
+
+
+
+
+                return Ok(list);
         }
         
-        [HttpPost]
-        public IActionResult CreateStudent(Student student) 
-        {
-            student.IndexNumber = $"s{new Random().Next(1, 20000)}";
-            return Ok(student);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult PutStudent(int id)
-        {
-
-            return Ok("Aktualizacja dokonczona");
-        }
-
-
-
-        [HttpDelete("{id}")]
-
-        public IActionResult DeleteStudent(int id)
-        {
-            
-            return Ok("Usuwanie ukonczone");
-        }
+        
+         
 
     }
+
 }
