@@ -65,16 +65,16 @@ namespace Cw3.Controllers
             using (SqlCommand com = new SqlCommand())
             {
                 com.Connection = con;
-                com.CommandText = "select Semester, StartDate, Name  from Enrollment INNER JOIN Studies on Enrollment.IdStudy = Studies.IdStudy WHERE IdEnrollment = (select IdEnrollment from student where indexNumber like '" + indexNumber + "' ); ";
-
+                com.CommandText = "select Semester, StartDate, Name  from Enrollment INNER JOIN Studies on Enrollment.IdStudy = Studies.IdStudy WHERE IdEnrollment = (select IdEnrollment from student where indexNumber like @id ); ";
+                com.Parameters.AddWithValue("id", indexNumber);
                 con.Open();
                 var dr = com.ExecuteReader();
 
                
                 if (dr.Read())
                 {
-                   
-                 return Ok(string.Concat("Semester: " + dr["Semester"].ToString(), "\nStartDate: ", dr["StartDate"].ToString(), "\n Name of studies: ", dr["Name"].ToString()));
+                  
+                 return Ok(string.Concat("Semester: " + dr["Semester"].ToString(), "\nStartDate: ", dr["StartDate"].ToString(), "\nName of studies: ", dr["Name"].ToString()));
                 }
                
 
