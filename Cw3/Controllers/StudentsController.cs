@@ -8,24 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cw3.Controllers
 {
-   [ApiController]
+    [ApiController]
     [Route("api/students")]
     public class StudentsController : ControllerBase
     {
-      
+
 
         private const string ConString = "Data Source=db-mssql;Initial Catalog=s19542;Integrated Security=True";
 
-     
+
 
         [HttpGet]
         public IActionResult GetStudents()
         {
             var list = new List<Student>();
 
-       
+
             using (SqlConnection con = new SqlConnection(ConString))
-           
+
             using (SqlCommand com = new SqlCommand())
             {
                 com.Connection = con;
@@ -33,10 +33,10 @@ namespace Cw3.Controllers
 
                 con.Open();
                 var dr = com.ExecuteReader();
-                while (dr.Read()) 
+                while (dr.Read())
                 {
                     var st = new Student();
-                    
+
                     st.FirstName = dr["FirstName"].ToString();
                     st.LastName = dr["LastName"].ToString();
                     st.BirthDate = dr["BirthDate"].ToString();
@@ -53,12 +53,34 @@ namespace Cw3.Controllers
 
 
 
-                return Ok(list);
+            return Ok(list);
         }
-        
-        
-         
+
+        [HttpGet("{IndexNumber}")]
+        public IActionResult GetStudents(string indexNumber)
+        {
+
+            using (SqlConnection con = new SqlConnection(ConString))
+              
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.Connection = con;
+                com.CommandText = "select Semester, StartDate, Name  from Enrollment INNER JOIN Studies on Enrollment.IdStudy = Studies.IdStudy WHERE IdEnrollment = (select IdEnrollment from student where indexNumber like '" + indexNumber + "' ); ";
+
+                con.Open();
+                var dr = com.ExecuteReader();
+
+               
+                if (dr.Read())
+                {
+                   
+                 return Ok(string.Concat("Semester: " + dr["Semester"].ToString(), "\nStartDate: ", dr["StartDate"].ToString(), "\n Name of studies: ", dr["Name"].ToString()));
+                }
+               
+
+            } 
+               return NotFound();
+        }
 
     }
-
 }
